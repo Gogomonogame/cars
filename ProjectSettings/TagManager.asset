@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 3
+  tags:
+  - Ramp
+  - Booster
+  - CheckPoint
+  - SpawnPoint
+  - Leaderboard
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Background
+    uniqueID: 3501211241
+    locked: 0
+  - name: Skidmarks
+    uniqueID: 3184908591
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Smoke
+    uniqueID: 1010725441
+    locked: 0
+  - name: Flying
+    uniqueID: 2970336695
+    locked: 0
+  - name: UI
+    uniqueID: 4085093221
+    locked: 0
+  m_RenderingLayers:
+  - Default
