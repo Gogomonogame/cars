@@ -1532,7 +1532,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnSteerLeftPress
           m_Mode: 1
@@ -1548,7 +1548,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnSteerRelease
           m_Mode: 1
@@ -1564,7 +1564,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnSteerLeftPress
           m_Mode: 1
@@ -1580,7 +1580,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnSteerRelease
           m_Mode: 1
@@ -1963,18 +1963,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3615554316125827931
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8446377630656685681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb18a3089897eca4a8dd07d81379f8e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3641989656325961225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2042,7 +2030,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnAcceleratePress
           m_Mode: 1
@@ -2058,7 +2046,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnAccelerateBreakRelease
           m_Mode: 1
@@ -2074,7 +2062,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnAcceleratePress
           m_Mode: 1
@@ -2090,7 +2078,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnAccelerateBreakRelease
           m_Mode: 1
@@ -2245,7 +2233,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnBreakPress
           m_Mode: 1
@@ -2261,7 +2249,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnAccelerateBreakRelease
           m_Mode: 1
@@ -2277,7 +2265,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnBreakPress
           m_Mode: 1
@@ -2293,7 +2281,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnAccelerateBreakRelease
           m_Mode: 1
@@ -2536,7 +2524,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnSteerRightPress
           m_Mode: 1
@@ -2552,7 +2540,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnSteerRelease
           m_Mode: 1
@@ -2568,7 +2556,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnSteerRightPress
           m_Mode: 1
@@ -2584,7 +2572,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3615554316125827931}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: CarUIInputHandler, Assembly-CSharp
           m_MethodName: OnSteerRelease
           m_Mode: 1
@@ -2822,7 +2810,6 @@ GameObject:
   - component: {fileID: 2879385113929137233}
   - component: {fileID: 2222626407938986533}
   - component: {fileID: 2020989915894136267}
-  - component: {fileID: 3615554316125827931}
   m_Layer: 5
   m_Name: Canvas - Menu
   m_TagString: Untagged

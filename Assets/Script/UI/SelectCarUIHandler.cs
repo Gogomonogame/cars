@@ -67,7 +67,7 @@ public class SelectCarUIHandler : MonoBehaviour
 
         PlayerPrefs.Save();
 
-        SceneManager.LoadScene("SpawnCar");
+        SceneManager.LoadScene("Lobby");
     }
 
     IEnumerator SpawnCarCO(bool isCarAppearingOnRightSide)
