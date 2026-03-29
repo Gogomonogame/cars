@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class RaceManager : NetworkBehaviour
@@ -13,7 +12,6 @@ public class RaceManager : NetworkBehaviour
     [Networked] public NetworkBool RaceStarted { get; set; }
     [Networked] public NetworkBool RaceFinished { get; set; }
     [Networked] public TickTimer CountdownTimer { get; set; }
-    [Networked] public int CountdownValue { get; set; }
 
     [Header("UI References")]
     public GameObject countdownPanel;
@@ -21,12 +19,10 @@ public class RaceManager : NetworkBehaviour
     public GameObject resultsPanel;
     public Transform resultsContainer;
     public GameObject resultItemPrefab;
-    public TMP_Text raceStatusText;
 
     [Header("Race State")]
     [Networked, Capacity(16)]
     public NetworkLinkedList<NetworkString<_16>> FinishOrder { get; }
-
     [Networked, Capacity(16)]
     public NetworkArray<float> FinishTimes { get; }
 
@@ -35,15 +31,25 @@ public class RaceManager : NetworkBehaviour
 
     public static RaceManager Instance { get; private set; }
 
+    private void Awake()
+    {
+        // ВИПРАВЛЕННЯ: Жорстка перевірка синглтона
+        if (Instance != null && Instance != this)
+        {
+            Debug.LogWarning("Знайдено дублікат RaceManager. Видаляємо старий.");
+            // Не використовуй DontDestroyOnLoad для RaceManager, 
+            // якщо він є частиною сцени "Online".
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
+
     public override void Spawned()
     {
-        Instance = this;
-
-        if (countdownPanel != null)
-            countdownPanel.SetActive(false);
-
-        if (resultsPanel != null)
-            resultsPanel.SetActive(false);
+        // Скидаємо панелі при спавні в мережі
+        if (countdownPanel != null) countdownPanel.SetActive(false);
+        if (resultsPanel != null) resultsPanel.SetActive(false);
     }
 
     public override void FixedUpdateNetwork()
@@ -58,46 +64,49 @@ public class RaceManager : NetworkBehaviour
 
     public void StartCountdown()
     {
+        // Тільки Host може запускати таймер
         if (Object.HasStateAuthority)
         {
-            LapsToComplete = 2; // Default, can be set from lobby
-            CountdownValue = 3;
+            LapsToComplete = 2;
             CountdownTimer = TickTimer.CreateFromSeconds(Runner, 4f);
-            StartCoroutine(CountdownCoroutine());
+
+            // Замість Coroutine краще використовувати RPC, 
+            // щоб візуал був у всіх, але логіка — на сервері
+            RpcStartCountdownVisual();
         }
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RpcStartCountdownVisual()
+    {
+        StartCoroutine(CountdownCoroutine());
     }
 
     private IEnumerator CountdownCoroutine()
     {
-        if (countdownPanel != null)
-            countdownPanel.SetActive(true);
+        if (countdownPanel != null) countdownPanel.SetActive(true);
 
         for (int i = 3; i > 0; i--)
         {
-            if (countdownText != null)
-                countdownText.text = i.ToString();
-
+            if (countdownText != null) countdownText.text = i.ToString();
             yield return new WaitForSeconds(1f);
         }
 
-        if (countdownText != null)
-            countdownText.text = "GO!";
+        if (countdownText != null) countdownText.text = "GO!";
+
+        if (Object.HasStateAuthority)
+        {
+            RaceStarted = true;
+            raceStartTime = Time.time;
+        }
 
         yield return new WaitForSeconds(0.5f);
-
-        // Start race
-        RaceStarted = true;
-        raceStartTime = Time.time;
-
-        if (countdownPanel != null)
-            countdownPanel.SetActive(false);
-
-        Debug.Log("Race Started!");
+        if (countdownPanel != null) countdownPanel.SetActive(false);
     }
 
     #endregion
 
-    #region Race Progress
+    #region Race Progress (Fixed)
 
     public void OnPlayerFinishedRace(NetworkPlayer player)
     {
@@ -109,14 +118,14 @@ public class RaceManager : NetworkBehaviour
             player.HasFinishedRace = true;
             player.FinishTime = Time.time - raceStartTime;
 
-            // Update finish order
+            // Оновлюємо мережеві списки
             FinishOrder.Add(player.NickName);
             FinishTimes.Set(finishedPlayers.Count - 1, player.FinishTime);
 
-            Debug.Log($"{player.NickName} finished at position {finishedPlayers.Count}");
+            // Оновлюємо лідерборд (якщо він є)
+            RpcRefreshLeaderboard();
 
-            // Check if all players finished
-            var allPlayers = FindObjectsOfType<NetworkPlayer>();
+            var allPlayers = FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None);
             if (finishedPlayers.Count >= allPlayers.Length)
             {
                 EndRace();
@@ -124,20 +133,19 @@ public class RaceManager : NetworkBehaviour
         }
     }
 
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RpcRefreshLeaderboard()
+    {
+        // Якщо у тебе є UI лідерборду в реальному часі
+        GameObject.FindGameObjectWithTag("Leaderboard")?.GetComponent<LeaderboardUIHandler>()?.ReloadList();
+    }
+
     private void CheckRaceCompletion()
     {
-        // Check if all active players have finished
-        var allPlayers = FindObjectsOfType<NetworkPlayer>();
-        int finishedCount = 0;
+        var allPlayers = FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None);
+        int finishedCount = allPlayers.Count(p => p.HasFinishedRace);
 
-        foreach (var player in allPlayers)
-        {
-            if (player.HasFinishedRace)
-                finishedCount++;
-        }
-
-        // If at least one player finished and 30 seconds passed, or all finished
-        if (finishedCount > 0 && (finishedCount >= allPlayers.Length || (Time.time - raceStartTime) > 300))
+        if (finishedCount > 0 && (finishedCount >= allPlayers.Length || (Time.time - raceStartTime) > 600))
         {
             EndRace();
         }
@@ -160,43 +168,35 @@ public class RaceManager : NetworkBehaviour
 
     #endregion
 
-    #region Results
+    #region Results UI
 
     private void ShowResultsPanel()
     {
-        if (resultsPanel != null)
+        if (resultsPanel == null) return;
+        resultsPanel.SetActive(true);
+
+        if (resultsContainer != null)
         {
-            resultsPanel.SetActive(true);
+            foreach (Transform child in resultsContainer) Destroy(child.gameObject);
+        }
 
-            // Clear existing results
-            if (resultsContainer != null)
+        var sortedPlayers = FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None)
+            .OrderBy(p => p.HasFinishedRace ? 0 : 1)
+            .ThenBy(p => p.FinishTime)
+            .ToList();
+
+        for (int i = 0; i < sortedPlayers.Count; i++)
+        {
+            var player = sortedPlayers[i];
+            if (resultItemPrefab != null && resultsContainer != null)
             {
-                foreach (Transform child in resultsContainer)
+                var item = Instantiate(resultItemPrefab, resultsContainer);
+                var texts = item.GetComponentsInChildren<TMP_Text>();
+                if (texts.Length >= 3)
                 {
-                    Destroy(child.gameObject);
-                }
-            }
-
-            // Show results
-            var allPlayers = FindObjectsOfType<NetworkPlayer>()
-                .OrderBy(p => p.HasFinishedRace ? 0 : 1)
-                .ThenBy(p => p.FinishTime)
-                .ToList();
-
-            for (int i = 0; i < allPlayers.Count; i++)
-            {
-                var player = allPlayers[i];
-                if (resultItemPrefab != null && resultsContainer != null)
-                {
-                    var item = Instantiate(resultItemPrefab, resultsContainer);
-                    var texts = item.GetComponentsInChildren<TMP_Text>();
-                    if (texts.Length >= 3)
-                    {
-                        texts[0].text = $"{i + 1}.";
-                        texts[1].text = player.NickName.Value;
-                        texts[2].text = player.HasFinishedRace ?
-                            FormatTime(player.FinishTime) : "DNF";
-                    }
+                    texts[0].text = $"{i + 1}.";
+                    texts[1].text = player.NickName.ToString();
+                    texts[2].text = player.HasFinishedRace ? FormatTime(player.FinishTime) : "DNF";
                 }
             }
         }
@@ -204,31 +204,22 @@ public class RaceManager : NetworkBehaviour
 
     private string FormatTime(float time)
     {
-        int minutes = (int)(time / 60);
-        int seconds = (int)(time % 60);
-        int milliseconds = (int)((time * 1000) % 1000);
-        return $"{minutes:00}:{seconds:00}.{milliseconds:000}";
+        int min = (int)(time / 60);
+        int sec = (int)(time % 60);
+        int ms = (int)((time * 1000) % 1000);
+        return $"{min:00}:{sec:00}.{ms:000}";
     }
-
     #endregion
 
     #region Utility
-
     public int GetPlayerPosition(NetworkPlayer player)
     {
-        var allPlayers = FindObjectsOfType<NetworkPlayer>()
+        var allPlayers = FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None)
             .OrderByDescending(p => p.GetCheckpointsPassed())
             .ThenBy(p => p.GetLastCheckpointTime())
             .ToList();
 
         return allPlayers.IndexOf(player) + 1;
     }
-
-    public bool CanRaceStart()
-    {
-        var allPlayers = FindObjectsOfType<NetworkPlayer>();
-        return allPlayers.Length >= 1; // At least 1 player to start
-    }
-
     #endregion
 }

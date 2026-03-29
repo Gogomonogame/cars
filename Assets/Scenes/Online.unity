@@ -8929,7 +8929,7 @@ GameObject:
   - component: {fileID: 332859582}
   - component: {fileID: 332859581}
   - component: {fileID: 332859580}
-  - component: {fileID: 332859579}
+  - component: {fileID: 332859583}
   m_Layer: 0
   m_Name: NetworkRunnerAndSpawner
   m_TagString: Untagged
@@ -8937,18 +8937,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &332859579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 332859578}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1199893898, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &332859580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8961,7 +8949,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf3f1b02a163ab44d8ee593ee0711e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: -5141032876978619527, guid: 5ba543ed8568cf34ea1faa30def0e4b2, type: 3}
+  playerPrefab: {fileID: 6900006127236570037, guid: 5ba543ed8568cf34ea1faa30def0e4b2, type: 3}
 --- !u!114 &332859581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8989,6 +8977,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &332859583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 332859578}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1199893898, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &355110396
 GameObject:
   m_ObjectHideFlags: 0
@@ -25000,92 +25000,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!1 &1547158298
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1547158301}
-  - component: {fileID: 1547158300}
-  - component: {fileID: 1547158299}
-  m_Layer: 0
-  m_Name: RaceManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1547158299
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1547158298}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1d75d3350b683c419e9c75d4c6ee531, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WordOffset: 0
-  WordCount: 0
-  _interpolationDataSource: 0
-  _LapsToComplete: 2
-  _RaceStarted:
-    _value: 0
-  _RaceFinished:
-    _value: 0
-  _CountdownValue: 0
-  countdownPanel: {fileID: 948875515}
-  countdownText: {fileID: 566268135}
-  resultsPanel: {fileID: 0}
-  resultsContainer: {fileID: 0}
-  resultItemPrefab: {fileID: 1898538511723734520, guid: 75151fe91d79e774b9308f204ad418ca, type: 3}
-  raceStatusText: {fileID: 0}
-  _FinishOrder: []
-  _FinishTimes: []
---- !u!114 &1547158300
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1547158298}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObjectInterest: 1
-  DefaultInterestGroups: []
-  DestroyWhenStateAuthorityLeaves: 0
-  AllowStateAuthorityOverride: 1
-  AoiPositionSource: {fileID: 0}
-  Flags: 2561
-  NetworkGuid:
-    RawGuidValue: 99956b34a11040539f0d5b2a5de47e7d
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 1547158299}
-  SimulationBehaviours: []
---- !u!4 &1547158301
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1547158298}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1561007224
 GameObject:
   m_ObjectHideFlags: 0
@@ -31798,6 +31712,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leaderboardItemPrefab: {fileID: 1831157431645611871, guid: 23a39b97386a2c148a227489eb9871f3, type: 3}
+--- !u!4 &3314207976113335195
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6139354750862137097}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &3367721939767263897
 RectTransform:
   m_ObjectHideFlags: 0
@@ -32318,6 +32247,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!1 &6139354750862137097
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3314207976113335195}
+  - component: {fileID: 8188744934356472674}
+  - component: {fileID: 6944728530021945928}
+  m_Layer: 0
+  m_Name: RaceManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!222 &6145977364825855639
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -32447,7 +32394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 490813b39478c44499d215cbd050ca71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedText: {fileID: 1418333522}
+  speedText: {fileID: 95209685}
   speedometerNeedle: {fileID: 385610192}
   maxSpeed: 100
   minNeedleAngle: 0
@@ -32458,6 +32405,7 @@ MonoBehaviour:
   timerText: {fileID: 1929548357}
   countdownPanel: {fileID: 948875515}
   countdownText: {fileID: 566268135}
+  minimapIndicator: {fileID: 0}
   pauseMenuPanel: {fileID: 1194969271}
   resumeButton: {fileID: 2131018752}
   quitButton: {fileID: 971091408}
@@ -32527,6 +32475,33 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6944728530021945928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6139354750862137097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d75d3350b683c419e9c75d4c6ee531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WordOffset: 0
+  WordCount: 0
+  _interpolationDataSource: 0
+  _LapsToComplete: 2
+  _RaceStarted:
+    _value: 0
+  _RaceFinished:
+    _value: 0
+  countdownPanel: {fileID: 948875515}
+  countdownText: {fileID: 566268135}
+  resultsPanel: {fileID: 0}
+  resultsContainer: {fileID: 0}
+  resultItemPrefab: {fileID: 0}
+  _FinishOrder: []
+  _FinishTimes: []
 --- !u!224 &7152349291438240406
 RectTransform:
   m_ObjectHideFlags: 0
@@ -32608,6 +32583,30 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8188744934356472674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6139354750862137097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectInterest: 1
+  DefaultInterestGroups: []
+  DestroyWhenStateAuthorityLeaves: 0
+  AllowStateAuthorityOverride: 1
+  AoiPositionSource: {fileID: 0}
+  Flags: 2561
+  NetworkGuid:
+    RawGuidValue: 40f51f83d43c4884802a23c5946132bc
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 6944728530021945928}
+  SimulationBehaviours: []
 --- !u!114 &8290431401656104464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33044,4 +33043,4 @@ SceneRoots:
   - {fileID: 813834991}
   - {fileID: 753018347}
   - {fileID: 332859582}
-  - {fileID: 1547158301}
+  - {fileID: 3314207976113335195}

@@ -235,7 +235,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      skidmark_long_3_0: -4794240907578794568
+      skidmark_long_3_1: -2421172724553977655
+      skidmark_long_3_2: 2610500455627797369
+      skidmark_long_3_3: 6205001761170101445
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

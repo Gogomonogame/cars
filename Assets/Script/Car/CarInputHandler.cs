@@ -2,69 +2,41 @@ using UnityEngine;
 
 public class CarInputHandler : MonoBehaviour
 {
-    public int playerNumber = 1;
+    public int playerNumber = 1; // Залиште для сумісності з Ghost/UI
     public bool isUiInput = false;
 
-    Vector2 inputVector = Vector2.zero;
+    private Vector2 inputVector = Vector2.zero;
+    private bool jumpRequested = false;
 
-    CarController carController;
-
-    private void Awake()
+    /*private void Update()
     {
-        carController = GetComponent<CarController>();
-    }
-
-    private void Update()
-    {
-        if (isUiInput)
+        // Збираємо ввід ТІЛЬКИ якщо це локальний гравець
+        // (Для безпеки можна додати перевірку на HasInputAuthority, якщо скрипт на NetworkObject)
+        if (!isUiInput)
         {
+            inputVector.x = Input.GetAxis("Horizontal"); // Використовуйте стандартні осі для мережі
+            inputVector.y = Input.GetAxis("Vertical");
 
+            if (Input.GetButtonDown("Jump")) jumpRequested = true;
         }
-        else
-        {
-            inputVector = Vector2.zero;
-            switch (playerNumber)
-            {
-                case 1:
-                    inputVector.x = Input.GetAxis("Horizontal_P1");
-                    inputVector.y = Input.GetAxis("Vertical_P1");
-                    break;
-                case 2:
-                    inputVector.x = Input.GetAxis("Horizontal_P2");
-                    inputVector.y = Input.GetAxis("Vertical_P2");
-                    break;
-                case 3:
-                    inputVector.x = Input.GetAxis("Horizontal_P3");
-                    inputVector.y = Input.GetAxis("Vertical_P3");
-                    break;
-                case 4:
-                    inputVector.x = Input.GetAxis("Horizontal_P4");
-                    inputVector.y = Input.GetAxis("Vertical_P4");
-                    break;
-            }
-            if (Input.GetButtonDown("Jump"))
-            {
-                carController.Jump(1, 0);
-            }
-        }
-        carController.SetInputVector(inputVector);
-
-        
-    }
-
-    public void SetInput(Vector2 newInput)
-    {
-        inputVector = newInput;
-    }
+    }*/
 
     public NetworkInputData GetNetworkInput()
     {
         NetworkInputData networkInputData = new NetworkInputData();
-        networkInputData.direction = inputVector;
+        Vector2 inputVector = Vector2.zero;
 
+        // Зчитуємо ввід ТУТ. Fusion сам знає, чий це ввід, 
+        // тому playerNumber та розділення на P1/P2 більше не потрібні.
+        inputVector.x = Input.GetAxis("Horizontal");
+        inputVector.y = Input.GetAxis("Vertical");
+
+        networkInputData.direction = inputVector;
         return networkInputData;
     }
 
-
-
+    public void SetInput(Vector2 newInput) // Для UI кнопок
+    {
+        inputVector = newInput;
+    }
 }

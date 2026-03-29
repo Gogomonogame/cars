@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      tribune_overhang_red_0: -2454106332005885383
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

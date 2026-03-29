@@ -1,4 +1,4 @@
-using Fusion;
+Ôªøusing Fusion;
 using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static Unity.Collections.Unicode;
 
 public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -45,6 +46,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public static LobbyManager Instance { get; private set; }
 
+
+
+
+
     private void Awake()
     {
         if (Instance == null)
@@ -63,6 +68,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         string savedNick = PlayerPrefs.GetString("PlayerNickName", "");
         if (!string.IsNullOrEmpty(savedNick)) nickNameInputField.text = savedNick;
 
+        // –ü—Ä–∏–≤'—è–∑–∫–∞ –∫–Ω–æ–ø–æ–∫
         createRoomButton?.onClick.AddListener(OnCreateRoomClicked);
         joinRoomButton?.onClick.AddListener(OnJoinRoomClicked);
         quickMatchButton?.onClick.AddListener(OnQuickMatchClicked);
@@ -115,13 +121,14 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             ? "Room_" + UnityEngine.Random.Range(1000, 9999)
             : roomNameInputField.text;
 
-        await StartGame(GameMode.Shared, roomName);
+        await StartGame(GameMode.Shared, roomName); // Shared mode –∑—Ä—É—á–Ω—ñ—à–∏–π –¥–ª—è –¥–∏–ø–ª–æ–º—ñ–≤
     }
 
     public async void OnJoinRoomClicked()
     {
         SaveNickName();
         ShowRoomList();
+        // –£ Fusion –¥–ª—è –æ—Ç—Ä–∏–º–∞–Ω–Ω—è —Å–ø–∏—Å–∫—É —Å–µ—Å—ñ–π —Ç—Ä–µ–±–∞ –ø—ñ–¥–∫–ª—é—á–∏—Ç–∏—Å—è –¥–æ –ª–æ–±—ñ
         await networkRunner.JoinSessionLobby(SessionLobby.ClientServer);
     }
 
@@ -138,8 +145,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnStartGameClicked()
     {
+        // IsSharedModeMasterClient ‚Äî —Ü–µ property, –±–µ–∑ –¥—É–∂–æ–∫!
         if (networkRunner.IsServer || networkRunner.IsSharedModeMasterClient)
         {
+            // –£ Fusion –∑–∞–≤–∞–Ω—Ç–∞–∂–µ–Ω–Ω—è —Å—Ü–µ–Ω–∏ —Ä–æ–±–∏—Ç—å—Å—è —Ç–∞–∫:
             networkRunner.SetActiveScene(gameSceneName);
         }
     }
@@ -161,6 +170,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private async Task StartGame(GameMode mode, string sessionName)
     {
+        // –ü–µ—Ä–µ–≤—ñ—Ä–∫–∞ SceneManager
         var sceneManager = gameObject.GetComponent<NetworkSceneManagerDefault>();
         if (sceneManager == null) sceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>();
 
@@ -182,8 +192,6 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     #region INetworkRunnerCallbacks
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        if (this == null || !gameObject.activeInHierarchy) return; // ﬂÍ˘Ó Ó·'∫ÍÚ ‚Ë‰‡ÎÂÌÓ ‡·Ó ‚ËÏÍÌÂÌÓ
-
         this.sessionList.Clear();
         foreach (var session in sessionList) this.sessionList[session.Name] = session;
         UpdateRoomListUI();
@@ -191,6 +199,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) => UpdatePlayersListUI();
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) => UpdatePlayersListUI();
+
+    // –í–∏–ø—Ä–∞–≤–ª–µ–Ω—ñ —Å–∏–≥–Ω–∞—Ç—É—Ä–∏ –¥–ª—è Unity Messages
     public void OnConnectedToServer(NetworkRunner runner) { Debug.Log("Connected"); }
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { ShowMainMenu(); }
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
@@ -198,6 +208,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) => ShowMainMenu();
 
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
+
+    // –†–µ—à—Ç–∞ –æ–±–æ–≤'—è–∑–∫–æ–≤–∏—Ö –º–µ—Ç–æ–¥—ñ–≤ —ñ–Ω—Ç–µ—Ä—Ñ–µ–π—Å—É (–ø–æ—Ä–æ–∂–Ω—ñ)
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
@@ -213,32 +225,14 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private void UpdateRoomListUI()
     {
-        if (roomListContainer == null || roomListItemPrefab == null) return;
-
+        if (roomListContainer == null) return;
         foreach (Transform child in roomListContainer) Destroy(child.gameObject);
 
         foreach (var session in sessionList.Values)
         {
-            // œÂÂ‚≥ˇ∫ÏÓ, ˜Ë ÒÂÒ≥ˇ ‡ÍÚË‚Ì‡ Ú‡ ˜Ë ∫ ‚≥Î¸Ì≥ Ï≥Òˆˇ (ÓÔˆ≥ÓÌ‡Î¸ÌÓ)
-            if (session.IsVisible && session.IsOpen)
-            {
-                GameObject item = Instantiate(roomListItemPrefab, roomListContainer);
-
-                // ¡≈«œ≈◊Õ»… œŒÿ”  “≈ —“”
-                var textComponent = item.GetComponentInChildren<TMP_Text>();
-                if (textComponent != null)
-                {
-                    textComponent.text = $"{session.Name} ({session.PlayerCount}/{session.MaxPlayers})";
-                }
-
-                // ¡≈«œ≈◊Õ»… œŒÿ”   ÕŒœ »
-                var btn = item.GetComponent<Button>();
-                if (btn != null)
-                {
-                    string sessionName = session.Name; // ÀÓÍ‡Î¸Ì‡ ÁÏ≥ÌÌ‡ ‰Îˇ Á‡ÏËÍ‡ÌÌˇ
-                    btn.onClick.AddListener(() => OnJoinSpecificRoom(sessionName));
-                }
-            }
+            var item = Instantiate(roomListItemPrefab, roomListContainer);
+            item.GetComponentInChildren<TMP_Text>().text = $"{session.Name} ({session.PlayerCount}/{session.MaxPlayers})";
+            item.GetComponent<Button>().onClick.AddListener(() => OnJoinSpecificRoom(session.Name));
         }
     }
 
@@ -247,10 +241,12 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         if (playersListContainer == null) return;
         foreach (Transform child in playersListContainer) Destroy(child.gameObject);
 
+        // –í–∏–∫–æ—Ä–∏—Å—Ç–æ–≤—É—î–º–æ –∞–∫—Ç—É–∞–ª—å–Ω–∏–π –º–µ—Ç–æ–¥ FindObjectsByType
         var players = FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None);
         foreach (var player in players)
         {
             var item = Instantiate(playerListItemPrefab, playersListContainer);
+            // –ü–µ—Ä–µ–∫–æ–Ω–∞–π—Å—è, —â–æ –≤ NetworkPlayer —î –ø–æ–ª–µ NickName (—Ç–∏–ø NetworkString)
             item.GetComponentInChildren<TMP_Text>().text = player.NickName.ToString();
         }
     }

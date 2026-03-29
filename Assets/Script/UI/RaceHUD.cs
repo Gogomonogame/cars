@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Fusion;
 
 public class RaceHUD : MonoBehaviour
 {
@@ -25,23 +26,26 @@ public class RaceHUD : MonoBehaviour
     public GameObject countdownPanel;
     public TMP_Text countdownText;
 
+    [Header("Minimap")]
+    public RectTransform minimapIndicator;
+
     [Header("Pause Menu")]
     public GameObject pauseMenuPanel;
     public Button resumeButton;
     public Button quitButton;
 
     private CarController localCarController;
+    // Якщо твій скрипт називається ArcadeCarController, заміни тип тут
     private CarLapCounter localLapCounter;
     private NetworkPlayer localPlayer;
     private float raceStartTime;
     private bool isPaused = false;
+    private bool raceTimerStarted = false;
 
     private void Start()
     {
-        // Find local player's car
         StartCoroutine(FindLocalCar());
 
-        // Setup pause menu
         if (resumeButton != null)
             resumeButton.onClick.AddListener(ResumeGame);
 
@@ -50,13 +54,11 @@ public class RaceHUD : MonoBehaviour
 
         if (pauseMenuPanel != null)
             pauseMenuPanel.SetActive(false);
-
-        totalLaps = 2; // Default, can be read from RaceManager
     }
 
     private System.Collections.IEnumerator FindLocalCar()
     {
-        // Wait for local player to be spawned
+        // Чекаємо локального гравця
         while (NetworkPlayer.Local == null)
         {
             yield return null;
@@ -66,13 +68,20 @@ public class RaceHUD : MonoBehaviour
         localCarController = localPlayer.GetComponent<CarController>();
         localLapCounter = localPlayer.GetComponent<CarLapCounter>();
 
-        // Wait for race to start
-        while (RaceManager.Instance == null || !RaceManager.Instance.RaceStarted)
+        // ЧЕКАЄМО, поки RaceManager з'явиться в мережі (Spawned)
+        while (RaceManager.Instance == null || !RaceManager.Instance.Object || !RaceManager.Instance.Object.IsValid)
+        {
+            yield return null;
+        }
+
+        // Чекаємо саме початку гонки
+        while (!RaceManager.Instance.RaceStarted)
         {
             yield return null;
         }
 
         raceStartTime = Time.time;
+        raceTimerStarted = true;
     }
 
     private void Update()
@@ -82,16 +91,23 @@ public class RaceHUD : MonoBehaviour
             TogglePause();
         }
 
+        // БЕЗПЕЧНА ПЕРЕВІРКА: чи існує RaceManager і чи він в мережі
+        if (RaceManager.Instance == null || !RaceManager.Instance.Object || !RaceManager.Instance.Object.IsValid)
+        {
+            return;
+        }
+
         UpdateHUD();
     }
 
     private void UpdateHUD()
     {
-        // Update speedometer
+        // Спідометр
         if (localCarController != null && speedText != null)
         {
+            // Переконайся, що в CarController є метод GetVelocityMagnitude()
             float speed = localCarController.GetVelocityMagnitude();
-            speedText.text = Mathf.RoundToInt(speed * 3.6f) + " km/h"; // Convert to km/h
+            speedText.text = Mathf.RoundToInt(speed * 3.6f) + " km/h";
 
             if (speedometerNeedle != null)
             {
@@ -101,30 +117,40 @@ public class RaceHUD : MonoBehaviour
             }
         }
 
-        // Update position
-        if (localPlayer != null && RaceManager.Instance != null && positionText != null)
+        // Позиція в гонці
+        if (localPlayer != null && positionText != null)
         {
             int position = RaceManager.Instance.GetPlayerPosition(localPlayer);
-            string suffix = "th";
-            if (position == 1) suffix = "st";
-            else if (position == 2) suffix = "nd";
-            else if (position == 3) suffix = "rd";
-
+            string suffix = GetOrdinalSuffix(position);
             positionText.text = $"{position}{suffix}";
         }
 
-        // Update lap counter
+        // Лічильник кіл
         if (localLapCounter != null && lapText != null)
         {
-            int currentLap = Mathf.Min(localLapCounter.GetNumberOfCheckpointsPassed() + 1, totalLaps);
-            lapText.text = $"Lap {currentLap}/{totalLaps}";
+            // Отримуємо кількість кіл з RaceManager (там вона мережева)
+            int maxLaps = RaceManager.Instance.LapsToComplete;
+            int currentLap = Mathf.Min(localLapCounter.GetCurrentLap() + 1, maxLaps);
+            lapText.text = $"Lap {currentLap}/{maxLaps}";
         }
 
-        // Update timer
-        if (RaceManager.Instance != null && RaceManager.Instance.RaceStarted && timerText != null)
+        // Таймер гонки
+        if (raceTimerStarted && !RaceManager.Instance.RaceFinished && timerText != null)
         {
             float elapsed = Time.time - raceStartTime;
             timerText.text = FormatTime(elapsed);
+        }
+    }
+
+    private string GetOrdinalSuffix(int num)
+    {
+        if (num <= 0) return "";
+        switch (num)
+        {
+            case 1: return "st";
+            case 2: return "nd";
+            case 3: return "rd";
+            default: return "th";
         }
     }
 
@@ -136,77 +162,32 @@ public class RaceHUD : MonoBehaviour
         return $"{minutes:00}:{seconds:00}.{milliseconds:000}";
     }
 
-    #region Countdown
-
-    public void ShowCountdown(int value)
-    {
-        if (countdownPanel != null)
-        {
-            countdownPanel.SetActive(true);
-
-            if (countdownText != null)
-            {
-                if (value > 0)
-                    countdownText.text = value.ToString();
-                else
-                    countdownText.text = "GO!";
-            }
-        }
-    }
-
-    public void HideCountdown()
-    {
-        if (countdownPanel != null)
-            countdownPanel.SetActive(false);
-    }
-
-    #endregion
-
-    #region Pause Menu
-
     public void TogglePause()
     {
         isPaused = !isPaused;
-
         if (pauseMenuPanel != null)
             pauseMenuPanel.SetActive(isPaused);
 
+        // Увага: Time.timeScale впливає на фізику локально, але не зупиняє мережу!
         Time.timeScale = isPaused ? 0f : 1f;
     }
 
     public void ResumeGame()
     {
         isPaused = false;
-
-        if (pauseMenuPanel != null)
-            pauseMenuPanel.SetActive(false);
-
+        if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
         Time.timeScale = 1f;
     }
 
     public void QuitToMenu()
     {
         Time.timeScale = 1f;
-
-        // Leave the room
-        if (Fusion.NetworkRunner.GetRunnerForScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene()) != null)
+        // Вимикаємо Fusion Runner перед виходом
+        var runners = FindObjectsByType<NetworkRunner>(FindObjectsSortMode.None);
+        foreach (var r in runners)
         {
-            var runner = Fusion.NetworkRunner.GetRunnerForScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
-            runner.Shutdown();
+            r.Shutdown();
         }
-
-        // Load main menu
         UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
     }
-
-    #endregion
-
-    #region Results
-
-    public void ShowResults(string[] playerNames, float[] times)
-    {
-        // This will be handled by RaceManager
-    }
-
-    #endregion
 }

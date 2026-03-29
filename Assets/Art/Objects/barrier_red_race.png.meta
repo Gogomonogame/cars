@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      barrier_red_race_0: -1797931294388475412
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

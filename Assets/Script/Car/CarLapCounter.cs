@@ -28,6 +28,7 @@ public class CarLapCounter : MonoBehaviour
         }
     }
 
+    public int GetCurrentLap() => lapsCompleted;
     public int GetNumberOfCheckpointsPassed() => numberOfPassedCheckpoints;
     public float GetTimeAtLastCheckpoint() => timeLastPassedCheckPoint;
 

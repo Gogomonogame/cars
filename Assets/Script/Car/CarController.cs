@@ -23,11 +23,9 @@ public class CarController : NetworkBehaviour
     public ParticleSystem landingParticleSystem;
     public bool canJump = true;
 
-    //private:
-    float accelerationInput = 0;
-    float steeringInput = 0;
-
-    float rotationAngle = 0;
+    [Networked] public float accelerationInput { get; set; }
+    [Networked] public float steeringInput { get; set; }
+    [Networked] public float rotationAngle { get; set; }
 
     float velocityVsUp = 0;
 
@@ -59,29 +57,29 @@ public class CarController : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
+        // Тільки той, хто має InputAuthority, може записувати ввід
         if (GetInput(out NetworkInputData data))
         {
-            steeringInput = data.direction.x;
             accelerationInput = data.direction.y;
+            steeringInput = data.direction.x;
         }
 
+        // Фізика має працювати для ВСІХ екземплярів машини на кожному клієнті,
+        // використовуючи вже синхронізовані [Networked] змінні.
         ApplyEngineForce();
-
         KillOrthogonalVelocity();
-
         ApplySteering();
-
     }
 
 
     void ApplyEngineForce()
     {
-        if (isJumping && accelerationInput < 0) 
+        if (isJumping && accelerationInput < 0)
         {
             accelerationInput = 0;
         }
 
-        velocityVsUp = Vector2.Dot(transform.up,carRb.linearVelocity);
+        velocityVsUp = Vector2.Dot(transform.up, carRb.linearVelocity);
 
         if (velocityVsUp > maxSpeed && accelerationInput > 0) return;
         if (velocityVsUp < -maxSpeed * 0.5f && accelerationInput < 0) return;
@@ -104,14 +102,13 @@ public class CarController : NetworkBehaviour
 
     void ApplySteering()
     {
-        float minSpeedBeforeAllowTurningFactor = (carRb.linearVelocity.magnitude / 8);
-        minSpeedBeforeAllowTurningFactor = Mathf.Clamp01(minSpeedBeforeAllowTurningFactor);
-
-
-        rotationAngle -= steeringInput * turnFactor * minSpeedBeforeAllowTurningFactor;
-
+        float minSpeedFactor = Mathf.Clamp01(carRb.linearVelocity.magnitude / 8);
+        
+        // Оновлюємо кут повороту
+        rotationAngle -= steeringInput * turnFactor * minSpeedFactor;
+        
+        // Використовуємо MoveRotation для плавності в мережі
         carRb.MoveRotation(rotationAngle);
-
     }
 
     void KillOrthogonalVelocity()
@@ -130,7 +127,7 @@ public class CarController : NetworkBehaviour
 
 
 
-    
+
     float GetLateralVelocity()//How fast car moves sideways
     {
         return Vector2.Dot(transform.right, carRb.linearVelocity);
@@ -146,7 +143,7 @@ public class CarController : NetworkBehaviour
             return false;
         }
 
-        if(accelerationInput < 0 && velocityVsUp > 0) //If moving forward and break - screech tires
+        if (accelerationInput < 0 && velocityVsUp > 0) //If moving forward and break - screech tires
         {
             isBreaking = true;
             return true;
@@ -204,10 +201,10 @@ public class CarController : NetworkBehaviour
             carShadowRenderer.transform.localScale = carSpriteRenderer.transform.localScale * 0.75f;
 
             //Offset the shadow a bit
-            carShadowRenderer.transform.localPosition = new Vector3(1,-1,0) * 1 * jumpCurve.Evaluate(jumpCompletedPercentage) * jumpHeightScale;
+            carShadowRenderer.transform.localPosition = new Vector3(1, -1, 0) * 1 * jumpCurve.Evaluate(jumpCompletedPercentage) * jumpHeightScale;
 
             //When we reach 100% we are done
-            if(jumpCompletedPercentage == 1.0f)
+            if (jumpCompletedPercentage == 1.0f)
             {
                 break;
             }
